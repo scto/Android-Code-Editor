@@ -2,6 +2,23 @@ plugins {
     id 'com.android.application'
 }
 
+def secrets = System.getenv("KEYSTORE")
+
+if (secrets != null) {
+    new File("$projectDir/secrets.properties").text = secrets;
+}
+
+def secretsPropertiesFile = file('../secrets.properties')
+def secretsProperties = new Properties()
+
+if (secretsPropertiesFile.exists()) {
+    secretsProperties.load(new FileInputStream(secretsPropertiesFile))
+}
+
+def keyStoreName = secretsProperties.getProperty('keyStoreName')
+def keyStorePassword = secretsProperties.getProperty('keyStorePassword')
+def shouldSign = keyStorePassword != null
+
 android {
     compileSdk 32
     buildToolsVersion "33.0.2"
@@ -39,6 +56,25 @@ android {
 
     buildFeatures {
         viewBinding true
+    }
+    
+    signingConfigs {
+        release {
+            if (shouldSign) {
+                storeFile file("../keystore.jks")
+                storePassword keyStorePassword
+                keyAlias keyStoreName
+                keyPassword keyStorePassword
+            }
+        }
+        debug {
+            if (shouldSign) {
+                storeFile file("../keystore.jks")
+                storePassword keyStorePassword
+                keyAlias keyStoreName
+                keyPassword keyStorePassword
+            }
+        }
     }
 }
 
