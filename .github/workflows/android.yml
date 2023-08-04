@@ -6,7 +6,6 @@ name: Android CI
 
 on:
   push:
-  workflow_dispatch:
 
 jobs:
   buildApkFile:
@@ -27,10 +26,10 @@ jobs:
       - name: Set environmental variables
         shell: bash
         env:
-          JSON_CONTENT: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        if: ${{ env.JSON_CONTENT != '' }}
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+        if: ${{ env.KEYSTORE != '' }}
         run: |
-            printf 'KEYSTORE<<EOF\n%s\nEOF\n' "$KEYSTORE" >> $GITHUB_ENV
+          printf 'KEYSTORE<<EOF\n%s\nEOF\n' "$KEYSTORE" >> $GITHUB_ENV
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --warning-mode all
