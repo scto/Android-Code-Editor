@@ -5,7 +5,8 @@ plugins {
 def secrets = System.getenv("KEYSTORE")
 
 if (secrets != null) {
-    new File("$projectDir/secrets.properties").text = secrets;
+    def file = new File("../secrets.properties")
+    file.write(secrets);
 }
 
 def secretsPropertiesFile = file('../secrets.properties')
