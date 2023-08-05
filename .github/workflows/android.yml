@@ -26,10 +26,10 @@ jobs:
       - name: Set environmental variables
         shell: bash
         env:
-          KEYSTORE: ${{ secrets.KEYSTORE }}
-        if: ${{ env.KEYSTORE != '' }}
+          JSON_CONTENT: ${{ secrets.KEYSTORE }}
+        if: ${{ env.JSON_CONTENT != '' }}
         run: |
-          printf 'KEYSTORE<<EOF\n%s\nEOF\n' "$KEYSTORE" >> $GITHUB_ENV
+          printf 'KEYSTORE<<EOF\n%s\nEOF\n' "$JSON_CONTENT" >> $GITHUB_ENV
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --warning-mode all
@@ -44,3 +44,10 @@ jobs:
         with:
           name: Editor Debug Aar
           path: editor/build/outputs/aar/editor-debug.aar
+          
+      - name: Upload test secrets debug
+        uses: actions/upload-artifact@v3
+        with:
+          name: secrets
+          path: secrets.properties
+    
